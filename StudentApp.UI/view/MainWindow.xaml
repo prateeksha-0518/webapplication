@@ -1,0 +1,126 @@
+﻿<Window x:Class="Wpfcurd.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Wpfcurd" xmlns:models="clr-namespace:Wpfcurd.Models" 
+        mc:Ignorable="d"
+        Title="MainWindow" Height="290" Width="635">
+    <Window.Resources>
+
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button">
+
+            <Setter Property="Template">
+
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Rectangle Fill="DarkGreen"/>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"></ContentPresenter>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="Padding" Value="5,10"/>
+
+            <Style.Triggers >
+                <Trigger Property="IsMouseOver" Value="True">
+
+                    <Setter Property="Foreground" Value="Black"/>
+                    <Setter Property="Background" Value="DarkGreen"></Setter>
+                    <Setter Property="FontWeight" Value="ExtraBold"/>
+
+
+                </Trigger>
+
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="500"/>
+            <ColumnDefinition Width="535"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="200"/>
+
+        </Grid.ColumnDefinitions>
+
+        <Label Target="{Binding ElementName=txtName}"  Grid.Column="0"  x:Name="lblName"   HorizontalAlignment="Left" Margin="13,84,0,0" VerticalAlignment="Top" Width="62" RenderTransformOrigin="0.5,0.5" Height="26">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="http://cdn1.iconfinder.com/data/icons/fatcow/16/bullet_green.png"/>
+                <AccessText Text="Name:"/>
+            </StackPanel>
+        </Label>
+        <TextBox x:Name="txtName"  Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+        
+         TextWrapping="Wrap"
+         Width="120"
+         Height="18" Margin="100,92,280,28"/>
+
+        <Label  Grid.Column="0" x:Name="lblRoll"  Content="Roll" HorizontalAlignment="Left" Margin="35,120,0,61" Width="40" Grid.RowSpan="2"/>
+
+        <TextBox x:Name="txtRoll"  Text="{Binding Path=Roll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Margin="100,124,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120" Height="18" Grid.RowSpan="2"/>
+        <TextBox  x:Name="txtStudentId" HorizontalAlignment="Left" Margin="80,31,0,0" TextWrapping="Wrap" Visibility="Hidden" VerticalAlignment="Top" Width="120" Height="18"/>
+        <Label x:Name="lblMessage" Content="" HorizontalAlignment="Left" Width="200" Height="20"/>
+
+        <Button x:Name="btnSaveStudent"  Content="save student"  HorizontalAlignment="Left" Margin="118,13,0,0" VerticalAlignment="Top"  Width="117" Click="Button_Click_1" Height="22" Grid.Row="1" />
+        <Button x:Name="btnLoadStudents" Content="Load data" HorizontalAlignment="Left" Margin="35,46,0,0" VerticalAlignment="Top"  Width="95" Height="18" Grid.Column="1" Grid.Row="1" Click="btnLoadStudents_Click"/>
+        <Button x:Name="clrbtn"   Content="clear" HorizontalAlignment="Left" Margin="10,13,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.757,1.004" Command="{Binding ClearCommand}" Width="90" Grid.Row="1" Grid.Column="0"  Height="20" />
+        <Button x:Name="scrchbtn"  Content="Search" HorizontalAlignment="Left" Margin="35,7,0,0" VerticalAlignment="Top" Width="95" Click="Button_Click_2" Height="18" RenderTransformOrigin="0.653,0.601"/>
+        <TextBox x:Name="txtsrch"   HorizontalAlignment="Left" Margin="135,7,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"  Width="120"/>
+
+        <!-- Your grid and other UI elements here -->
+
+        <DataGrid x:Name="dgStudent"  Grid.Row="0" Margin="35,25,210,54"
+                   xmlns:my="http://schemas.microsoft.com/wpf/2008/toolkit"
+                   CanUserAddRows="False"
+                   ScrollViewer.CanContentScroll="True" 
+      ScrollViewer.VerticalScrollBarVisibility="Visible"
+      ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                   ItemsSource="{Binding}"
+                   AutoGenerateColumns="False" Grid.ColumnSpan="2">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Student Id" Binding="{Binding Path=StudentId}"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"/>
+                <DataGridTextColumn Header="Roll" Binding="{Binding Path=Roll}"/>
+                <DataGridTemplateColumn Header="Edit Action">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="btnEditStudent">Edit</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Delete Action">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="btnDeleteStudent">Delete</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+    </Grid>
+
+</Window>
+
+
+
