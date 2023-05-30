@@ -75,19 +75,19 @@
 
         <Label  Grid.Column="0" x:Name="lblRoll"  Content="Roll" HorizontalAlignment="Left" Margin="35,120,0,61" Width="40" Grid.RowSpan="2"/>
 
-        <TextBox x:Name="txtRoll"  Text="{Binding Path=Roll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Margin="100,124,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120" Height="18" Grid.RowSpan="2"/>
+        <TextBox x:Name="txtRoll"  Text="{Binding Path=Roll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" HorizontalAlignment="Left" Margin="100,89,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120" Height="18"/>
         <TextBox  x:Name="txtStudentId" HorizontalAlignment="Left" Margin="80,31,0,0" TextWrapping="Wrap" Visibility="Hidden" VerticalAlignment="Top" Width="120" Height="18"/>
         <Label x:Name="lblMessage" Content="" HorizontalAlignment="Left" Width="200" Height="20"/>
 
         <Button x:Name="btnSaveStudent"  Content="save student"  HorizontalAlignment="Left" Margin="118,13,0,0" VerticalAlignment="Top"  Width="117" Click="Button_Click_1" Height="22" Grid.Row="1" />
-        <Button x:Name="btnLoadStudents" Content="Load data" HorizontalAlignment="Left" Margin="35,46,0,0" VerticalAlignment="Top"  Width="95" Height="18" Grid.Column="1" Grid.Row="1" Click="btnLoadStudents_Click"/>
+
         <Button x:Name="clrbtn"   Content="clear" HorizontalAlignment="Left" Margin="10,13,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.757,1.004" Command="{Binding ClearCommand}" Width="90" Grid.Row="1" Grid.Column="0"  Height="20" />
         <Button x:Name="scrchbtn"  Content="Search" HorizontalAlignment="Left" Margin="35,7,0,0" VerticalAlignment="Top" Width="95" Click="Button_Click_2" Height="18" RenderTransformOrigin="0.653,0.601"/>
         <TextBox x:Name="txtsrch"   HorizontalAlignment="Left" Margin="135,7,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"  Width="120"/>
 
         <!-- Your grid and other UI elements here -->
 
-        <DataGrid x:Name="dgStudent"  Grid.Row="0" Margin="35,25,210,54"
+        <DataGrid x:Name="dgStudent"  Grid.Row="0" Margin="35,25,210,106"
                    xmlns:my="http://schemas.microsoft.com/wpf/2008/toolkit"
                    CanUserAddRows="False"
                    ScrollViewer.CanContentScroll="True" 
