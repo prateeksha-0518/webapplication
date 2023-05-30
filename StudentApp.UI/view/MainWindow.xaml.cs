@@ -41,7 +41,7 @@ namespace Wpfcurd
             client.DefaultRequestHeaders.Accept.Add(
             new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
             InitializeComponent();
-            
+            GetStudents();
             clearCommand = new Relaycommand(clearData); ;
             Student student = new Student();
             DataContext = student;
@@ -75,7 +75,7 @@ namespace Wpfcurd
         private async Task GetStudents()
         {
             //Sends Request
-            HttpResponseMessage response =  await client.GetAsync("api/students");
+            HttpResponseMessage response = await client.GetAsync("api/students");
             if (response.IsSuccessStatusCode)
             {
                 //it reads the respone content and converts to collection type .Readaync is method to convert IEnumerable
@@ -88,27 +88,6 @@ namespace Wpfcurd
                 MessageBox.Show("Error Code: " + response.StatusCode + " Message: " + response.ReasonPhrase);
             }
         }
-
-
-
-        //private async Task GetStudentsbyid(int id)
-        //{
-        //    var url = "api/students/" + id;
-        //    HttpResponseMessage response = await client.GetAsync(url);
-        //    if (response.IsSuccessStatusCode)
-
-        //    {
-        //        var students =await  response.Content.ReadAsAsync<Student>();
-        //        dgStudent.DataContext = new List<Student> { students };
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Student Id with" + id.ToString() + " not found");
-
-        //    }
-        //}
-
-
      
         //Event Habler for button click
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -213,19 +192,13 @@ namespace Wpfcurd
             }
 
         }
-
-
-        private async void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Search()
         {
-            var searchValue = txtsrch.Text.Trim();
-
-            // Validate input
+            string searchValue = txtsrch.Text;
+            //Validate input
             if (!string.IsNullOrWhiteSpace(searchValue))
             {
-                //if (int.TryParse(searchValue,out int id))
-                //if(Convert.ToInt32(searchValue)>0)
-                // {
-                // Search by ID
+
                 if (searchValue.All(char.IsDigit))
                 {
                     // Search by ID
@@ -235,27 +208,49 @@ namespace Wpfcurd
                 else
                 {
                     // Search by name
-                    await SearchStudentByName(searchValue);
+                    SearchStudentByName(searchValue);
                 }
             }
+
             else
             {
-                MessageBox.Show("Please provide an ID or a name to search for.");
+                GetStudents();
             }
         }
+
+        private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Search();
+            }
+        }
+
+        private void scrchbtn_Click(object sender, RoutedEventArgs e)
+        {
+            Search();
+        }
+        //private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    if (string.IsNullOrWhiteSpace(txtsrch.Text))
+        //    {
+        //        GetStudents();
+        //    }
+        //    else
+        //    {
+        //        Search();
+        //    }
+        //}
         private async Task SearchStudentByName(string name)
         {
-             HttpResponseMessage response = await client.GetAsync($"api/students?name={Uri.EscapeDataString(name)}");
-          //  HttpResponseMessage response = await client.GetAsync($"api/students?name={name}");
+            
+           HttpResponseMessage response = await client.GetAsync($"api/students?name={name}");
 
             if (response.IsSuccessStatusCode)
             {
                 var students = await response.Content.ReadAsAsync<List<Student>>();
-
-                
                     dgStudent.DataContext = students;
-                  
-                
+          
             }
             else
             {
@@ -273,25 +268,25 @@ namespace Wpfcurd
 
                 
                     dgStudent.DataContext = new List<Student> { student };
-                      //lblMessage.Content = "student Found";
-                    MessageBox.Show("Student Found:\n\n");
-                dgStudent.DataContext = "";
-                
-               
+                        
             }
+           
             else 
             {
                 MessageBox.Show("Error Code: " + response.StatusCode + "\nMessage: " + response.ReasonPhrase);
                 
             }
-          
+           
+
         }
 
-
        
+
         private void btnLoadStudents_Click(object sender, RoutedEventArgs e)
         {
             GetStudents();
         }
+
+       
     }
 }
