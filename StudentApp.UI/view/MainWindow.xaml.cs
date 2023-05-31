@@ -254,6 +254,8 @@ namespace Wpfcurd
             }
             else
             {
+                dgStudent.DataContext = "";
+
                 MessageBox.Show("Error Code: " + response.StatusCode + "\nMessage: " + response.ReasonPhrase);
             }
         }
