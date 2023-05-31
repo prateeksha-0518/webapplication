@@ -14,8 +14,6 @@ namespace Wpfcurd.command
         public Relaycommand(Action work)
         {
             DoWork = work;
-
-
         }
 
         public event EventHandler CanExecuteChanged;

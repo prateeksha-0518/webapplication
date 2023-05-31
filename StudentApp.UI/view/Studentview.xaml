@@ -1,0 +1,117 @@
+﻿<UserControl x:Class="Wpfcurd.view.Studentview"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Wpfcurd.view"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    
+        <UserControl.Resources>
+
+            <Style TargetType="TextBox">
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="True">
+                        <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="Button">
+
+                <Setter Property="Template">
+
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Rectangle Fill="DarkGreen"/>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"></ContentPresenter>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Foreground" Value="White"></Setter>
+                <Setter Property="Padding" Value="5,10"/>
+
+                <Style.Triggers >
+                    <Trigger Property="IsMouseOver" Value="True">
+
+                        <Setter Property="Foreground" Value="Black"/>
+                        <Setter Property="Background" Value="DarkGreen"></Setter>
+                        <Setter Property="FontWeight" Value="ExtraBold"/>
+
+
+                    </Trigger>
+
+                </Style.Triggers>
+            </Style>
+
+        </UserControl.Resources>
+        <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal"  Grid.Row="0" Grid.Column="1" Margin="0 30 0 0">
+            <Button x:Name="scrchbtn"  Content="Search" Command="{Binding Path=SearchCommand}" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="95" Height="20"/>
+        <TextBox x:Name="txtsrch"  Text="{Binding Path=SearchText}"  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top"  Width="120" />
+           </StackPanel>
+            <DataGrid x:Name="dgStudent"  Grid.Row="1" Grid.Column="1"
+                   xmlns:my="http://schemas.microsoft.com/wpf/2008/toolkit"
+                   CanUserAddRows="False"
+                  ItemsSource="{Binding Path=StudentsList, Mode=TwoWay}"
+                   SelectedItem="{Binding Path=SelectedStudent, Mode=TwoWay}" AutoGenerateColumns="False" >
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Student Id" Binding="{Binding Path=StudentId}"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}"/>
+                <DataGridTextColumn Header="Roll" Binding="{Binding Path=Roll}"/>
+                <DataGridTemplateColumn Header="Edit Action">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button  x:Name="btnEdit"  Content="Edit" Command="{Binding Path=DataContext.EditCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}">
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+
+        <Label  Target="{Binding ElementName=txtName}" Grid.Row="2" Grid.Column="0" x:Name="lblName" Margin="0 30 0 0"  HorizontalAlignment="Left"  VerticalAlignment="Top" Width="62"  Height="26">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="http://cdn1.iconfinder.com/data/icons/fatcow/16/bullet_green.png"/>
+                    <AccessText Text="Name:"/>
+                </StackPanel>
+            </Label>
+        <Label  Target="{Binding ElementName=txtName}" Grid.Row="3"  Grid.Column="0"   x:Name="lblRoll" Margin="0 10 0 0"  HorizontalAlignment="Left"  VerticalAlignment="Top" Width="62"  Height="26">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="http://cdn1.iconfinder.com/data/icons/fatcow/16/bullet_green.png"/>
+                    <AccessText Text="Roll:"/>
+                </StackPanel>
+            </Label>
+            <TextBox x:Name="txtName" Margin="0 30 0 0" Grid.Row="2" Grid.Column="1"  Text="{Binding Path= CurrentStudent.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"  HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="18" />
+        <TextBox x:Name="txtRoll"  Grid.Row="3" Grid.Column="1" Margin="0 10 0 0" Text="{Binding Path=CurrentStudent.Roll, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"  HorizontalAlignment="Left" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120" Height="18"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="1">
+        <Button x:Name="btnSaveStudent"   Grid.Row="4"  Content="save student"  HorizontalAlignment="Left"    Width="95" Command="{Binding Path=SaveCommand}"  Height="20"  />
+            <Button x:Name="clrbtn"  Grid.Row="4" Content="clear" Command="{Binding Path=ClearCommand}" HorizontalAlignment="Left" Width="95" Height="20"  />
+
+            <Button x:Name="updbtn"  Content="Update" HorizontalAlignment="Left"  VerticalAlignment="Top"  Width="95" Height="20"  Command="{Binding Path=UpdateCommand}"/>
+        <Button x:Name="dltbtn"   Content="Delete" Command="{Binding Path=DeleteCommand}" HorizontalAlignment="Left" Width="95" Height="20" />
+        </StackPanel>
+
+        <!-- Your grid and other UI elements here -->
+    </Grid>
+</UserControl>
