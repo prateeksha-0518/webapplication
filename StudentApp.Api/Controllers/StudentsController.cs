@@ -8,6 +8,8 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Filters;
 using code.CustomException;
+using System.Diagnostics;
+using System.Threading;
 
 namespace code.Controllers
 {
@@ -65,6 +67,7 @@ namespace code.Controllers
                 }
                 else
                 {
+                   
                     throw new NullReferenceException(); ;
                 }
             }
