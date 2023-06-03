@@ -85,14 +85,14 @@ namespace Wpfcurd.Models
             return IsDeleted;
         }
 
-        public async Task<List<Student>> Search(int id)
+        public List<Student> Search(int id)
         {
             List<Student> objStudentsList = new List<Student>();
             var url = "api/students/" + id;
-            HttpResponseMessage response = await client.GetAsync(url);
+            HttpResponseMessage response =  client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
             {
-                var student = await response.Content.ReadAsAsync<Student>();
+                var student =  response.Content.ReadAsAsync<Student>().Result;
                 if (student != null)
                 {
                     objStudentsList.Add(new Student()
@@ -118,16 +118,16 @@ namespace Wpfcurd.Models
         //    return objstudent;
         //}
 
-        public async Task<List<Student>> SearchbyName(string name)
+        public List<Student> SearchbyName(string name)
         {
             List<Student> objStudentsList = new List<Student>();
             var url = "api/students?name=" + name;
-            HttpResponseMessage response = await client.GetAsync(url);
+            HttpResponseMessage response =  client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
             {
                 try
                 {
-                    var student = await response.Content.ReadAsAsync<List<Student>>();
+                    var student =  response.Content.ReadAsAsync<List<Student>>().Result;
                     if (student != null)
                     {
                         foreach (var students in student)

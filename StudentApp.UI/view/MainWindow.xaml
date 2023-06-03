@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Wpfcurd" xmlns:models="clr-namespace:Wpfcurd.Models" 
+        
         mc:Ignorable="d"
         Title="Student Application" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" xmlns:vw="clr-namespace:Wpfcurd.view">
     <Grid>

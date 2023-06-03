@@ -43,7 +43,7 @@ namespace Wpfcurd.ViewModel
             clearCommand = new Relaycommand(clearData);
             saveCommand = new Relaycommand(Save);
            
-            searchCommand = new Relaycommand(Search);
+           searchCommand = new Relaycommand(Search);
 
 
             deleteCommand = new Relaycommand(Delete);
@@ -212,6 +212,7 @@ namespace Wpfcurd.ViewModel
         {
             get
             {
+                
                 return searchCommand;
             }
             set
@@ -233,7 +234,7 @@ namespace Wpfcurd.ViewModel
         }
        
 
-        public async void SearchMethod()
+       public void Search()
         {
 
             if (string.IsNullOrEmpty(searchText))
@@ -245,7 +246,7 @@ namespace Wpfcurd.ViewModel
 
              else if (SearchText.All(char.IsDigit))
                 {
-                    var objStudent = await objStudentService.Search(Convert.ToInt32(SearchText));
+                    var objStudent =   objStudentService.Search(Convert.ToInt32(SearchText));
                     if (objStudent != null && objStudent.Count > 0)
                     {
                         StudentsList = new ObservableCollection<Student>(objStudent);
@@ -259,29 +260,22 @@ namespace Wpfcurd.ViewModel
                 }
                 else
                 {
-                    var objStudentbyName = await objStudentService.SearchbyName(SearchText);
-                    if (
-                    objStudentbyName != null)
+                    var objStudentbyName = objStudentService.SearchbyName(SearchText);
+                    if ( objStudentbyName != null&&objStudentbyName.Count>0)
                     {
                         StudentsList = new ObservableCollection<Student>(objStudentbyName);
                     }
                     else
                     {
-                        StudentsList = null;
                         MessageBox.Show("Student not found", "Failed", MessageBoxButton.OK, MessageBoxImage.Asterisk);
                     }
                 }
             }
-      
 
+        
 
-        private void Search()
-        {
-            SearchMethod();
-        }
 
       
-
         private Relaycommand loadCommand;
             public Relaycommand LoadCommand
             {

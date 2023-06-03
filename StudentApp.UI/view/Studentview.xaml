@@ -3,8 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Wpfcurd.view"
+            xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             
+
+
+             xmlns:local="clr-namespace:Wpfcurd.view" 
+            
              mc:Ignorable="d" 
+             
              d:DesignHeight="450" d:DesignWidth="800">
     
         <UserControl.Resources>
@@ -65,11 +71,14 @@
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Horizontal"  Grid.Row="0" Grid.Column="1" Margin="0 30 0 0">
-            <Button x:Name="scrchbtn"  Content="Search" Command="{Binding Path=SearchCommand}" HorizontalAlignment="Left"  VerticalAlignment="Top" Width="95" Height="20"/>
-            <TextBox x:Name="txtsrch"  Text="{Binding Path=SearchText, UpdateSourceTrigger=PropertyChanged}"   HorizontalAlignment="Left" TextWrapping="Wrap"  VerticalAlignment="Top"  Width="120">
-             
-            </TextBox>
-           </StackPanel>
+            <Button x:Name="scrchbtn"  Content="Search" Command="{Binding Path=SearchCommand}"  HorizontalAlignment="Left"  VerticalAlignment="Top" Width="95" Height="20"/>
+
+            <TextBox x:Name="txtsrch"  Text="{Binding Path=SearchText, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Left" TextWrapping="Wrap"  VerticalAlignment="Top"  Width="120">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding SearchCommand}"/>
+                </TextBox.InputBindings>
+                    </TextBox>
+        </StackPanel>
             <DataGrid x:Name="dgStudent"  Grid.Row="1" Grid.Column="1"
                    xmlns:my="http://schemas.microsoft.com/wpf/2008/toolkit"
                    CanUserAddRows="False"
