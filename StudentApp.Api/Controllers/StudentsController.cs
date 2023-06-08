@@ -16,8 +16,14 @@ namespace code.Controllers
     [ExceptionFilter]
     public class StudentsController : ApiController
     {
+        /// <summary>
+        /// Get All Students
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         [HttpGet]
-        public IHttpActionResult GetEmployees()
+        [Route("api/GetEmployees")]
+        public IHttpActionResult GetStudents()
         {
             using (DatabaseContext  dbContext = new DatabaseContext())
             {
@@ -33,12 +39,15 @@ namespace code.Controllers
                 }
             }
         }
-
-
-
-        //[ExceptionFilter]
-        //[Route("api/EF/{id}")]// Apply the ExceptionFilter to the specific action
-
+       
+        /// <summary>
+        /// Get students by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NullReferenceException"></exception>
+        [HttpGet]
+        [Route("api/Get/{id}")]
         public IHttpActionResult Get(int id)
         {
             using (DatabaseContext dbContext = new DatabaseContext())
@@ -54,8 +63,16 @@ namespace code.Controllers
                 }
             }
         }
+        /// <summary>
+        /// Get students by name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        /// <exception cref="NullReferenceException"></exception>
+        
         [HttpGet]
-        public IHttpActionResult Get(string name)
+        [Route("api/Get1/{name}")]
+        public IHttpActionResult Get1(string name)
         {
             using (DatabaseContext dbContext = new DatabaseContext())
             {
@@ -73,20 +90,34 @@ namespace code.Controllers
             }
         }
 
-
+        /// <summary>
+        /// Inserting students
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
 
         [HttpPost]
+        [Route("api/Post")]
         public IHttpActionResult Post([FromBody] Student employee)
         {
             using (DatabaseContext dbContext = new DatabaseContext())
             {
                 dbContext.Students.Add(employee);
                 dbContext.SaveChanges();
-                return CreatedAtRoute("DefaultApi", new { id = employee.StudentId }, employee);
+                return Ok(employee);
             }
         }
-
+        /// <summary>
+        /// Updating students
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="employee"></param>
+        /// <returns></returns>
+        /// <exception cref="HttpResponseException"></exception>
         [HttpPut]
+
+        [Route("api/Put/{id}")]
+        //[Route("api/students/{id}")]
         public IHttpActionResult Put(int id, [FromBody] Student employee)
         {
             using (DatabaseContext dbContext = new DatabaseContext())
@@ -105,8 +136,15 @@ namespace code.Controllers
                 }
             }
         }
-
+        /// <summary>
+        /// Deleting students by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="HttpResponseException"></exception>
         [HttpDelete]
+       
+        [Route("api/Delete/{id}")]
         public IHttpActionResult Delete(int id)
         {
             using (DatabaseContext dbContext = new DatabaseContext())

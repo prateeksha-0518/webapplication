@@ -14,40 +14,25 @@ using Wpfcurd.Models;
 namespace Wpfcurd.ViewModel
 {
 
-    public class StudentViewModel : INotifyPropertyChanged
+    public class StudentViewModel : ViewModelBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-
-        }
-        
         StudentService objStudentService;
         public StudentViewModel()
         {
-
             objStudentService = new StudentService();
             LoadData();
-
-
             CurrentStudent = new Student();
-            
+            editCommand = new Relaycommand(Edit, CanEdit, false);
 
-            editCommand = new Relaycommand(Edit);
-            
             SelectedStudent = new Student();
-            clearCommand = new Relaycommand(clearData);
-            saveCommand = new Relaycommand(Save);
-           
-           searchCommand = new Relaycommand(Search);
+            clearCommand = new Relaycommand(clearData, Canclear, false);
+            saveCommand = new Relaycommand(Save, CanSave, false);
+
+            searchCommand = new Relaycommand(Search, CanSearch, false);
 
 
-            deleteCommand = new Relaycommand(Delete);
-            loadCommand = new Relaycommand(Load);
+            deleteCommand = new Relaycommand(Delete, CanDelete, false);
+            // loadCommand = new Relaycommand(Load);
 
 
         }
@@ -61,29 +46,12 @@ namespace Wpfcurd.ViewModel
             {
                 return studentsList;
             }
-            set { studentsList = value; OnPropertyChanged("StudentsList"); }
+            set { studentsList = value; NotifyPropertyChanged("StudentsList"); }
         }
         private void LoadData()
         {
             StudentsList = new ObservableCollection<Student>(objStudentService.GetAll());
 
-        }
-        public bool isValid()
-        {
-            if (string.IsNullOrEmpty(CurrentStudent.Name))
-            {
-                MessageBox.Show("Name is required", "failed", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(CurrentStudent.Roll))
-            {
-                MessageBox.Show("Roll is required", "failed", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
-
-
-            return true;
         }
 
         private Relaycommand clearCommand;
@@ -99,17 +67,21 @@ namespace Wpfcurd.ViewModel
             }
         }
 
-
-
-
-        public void clearData()
+        private void clearData(object parameter)
         {
+           
+            CurrentStudent.Name = "";
+            CurrentStudent.Roll = "";
+        }
 
-            //currentStudent.StudentId = int.Parse("");
-            currentStudent.Name = "";
-            currentStudent.Roll = "";
+        private bool Canclear(object parameter)
+        {
+            return true;
 
-
+        }
+        private void clear()
+        {
+            clearData(null);
         }
         //Property that holds value of textboxes
         private Student currentStudent;
@@ -119,9 +91,10 @@ namespace Wpfcurd.ViewModel
             { return currentStudent; }
             set
             {
-                currentStudent = value; OnPropertyChanged("CurrentStudent");
+                currentStudent = value; NotifyPropertyChanged("CurrentStudent");
             }
         }
+        
         private Student _selectedStudent;
         public Student SelectedStudent
         {
@@ -129,7 +102,7 @@ namespace Wpfcurd.ViewModel
             set
             {
                 _selectedStudent = value;
-                OnPropertyChanged(nameof(SelectedStudent));
+                NotifyPropertyChanged(nameof(SelectedStudent));
             }
         }
         private Relaycommand editCommand;
@@ -142,10 +115,15 @@ namespace Wpfcurd.ViewModel
             set
             {
                 value = editCommand;
-                OnPropertyChanged(nameof(Edit));
+                NotifyPropertyChanged(nameof(Edit));
             }
         }
-        public void Edit()
+        private bool CanEdit(object parameter)
+        { 
+                return true;
+            
+        }
+        public void Edit(object parameter)
         {
 
             if (SelectedStudent != null)
@@ -166,26 +144,35 @@ namespace Wpfcurd.ViewModel
                 return saveCommand;
             }
         }
-
-        public void Save()
+        
+        private bool CanSave(object parameter)
         {
-            if (isValid())
+            if (string.IsNullOrEmpty(CurrentStudent.Name) || string.IsNullOrEmpty(currentStudent.Roll))
             {
-                if (currentStudent.StudentId == 0)
-                {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
+        private void Save(object parameter)
+        {
+             if (currentStudent.StudentId == 0)
+                {
                     var IsSaved = objStudentService.Add(CurrentStudent);
                     if (IsSaved)
                     {
                         MessageBox.Show("Student Saved", "Success", MessageBoxButton.OK, MessageBoxImage.Asterisk);
                         LoadData();
-                        clearData();
-                    }
+                    clearData("");
+                }
                     else
                     {
                         MessageBox.Show("Student failed to save", "Failed", MessageBoxButton.OK, MessageBoxImage.Asterisk);
                     }
-                }
+         }
                 else
 
                 {
@@ -195,15 +182,12 @@ namespace Wpfcurd.ViewModel
                     {
                         MessageBox.Show("Student Updated", "Success", MessageBoxButton.OK, MessageBoxImage.Asterisk);
                         LoadData();
-                        clearData();
+                    ClearCommand.Execute("");
                     }
                     else
                     {
                         MessageBox.Show("Update failed", "Failed", MessageBoxButton.OK, MessageBoxImage.Asterisk);
-
-
-                    }
-                }
+                    }    
             }
         }
 
@@ -211,15 +195,13 @@ namespace Wpfcurd.ViewModel
         public Relaycommand SearchCommand
         {
             get
-            {
-                
+            {   
                 return searchCommand;
             }
             set
             {
                 searchCommand = value;
             }
-
         }
        
         private String searchText;
@@ -229,28 +211,28 @@ namespace Wpfcurd.ViewModel
             { return searchText; }
             set
             {
-                searchText = value; OnPropertyChanged("SearchText");
+                searchText = value;NotifyPropertyChanged("SearchText");
             }
         }
-       
+        private bool CanSearch(object parameter)
+        {        
+                return true;     
+        }
 
-       public void Search()
+
+        public void Search(object parameter)
         {
-
             if (string.IsNullOrEmpty(searchText))
             {
                 LoadData();
                 return;
-
             }
-
              else if (SearchText.All(char.IsDigit))
                 {
                     var objStudent =   objStudentService.Search(Convert.ToInt32(SearchText));
                     if (objStudent != null && objStudent.Count > 0)
                     {
                         StudentsList = new ObservableCollection<Student>(objStudent);
-
                     }
                     else
                     {
@@ -267,14 +249,11 @@ namespace Wpfcurd.ViewModel
                     }
                     else
                     {
-                        MessageBox.Show("Student not found", "Failed", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                    StudentsList = null;
+                    MessageBox.Show("Student not found", "Failed", MessageBoxButton.OK, MessageBoxImage.Asterisk);
                     }
                 }
             }
-
-        
-
-
       
         private Relaycommand loadCommand;
             public Relaycommand LoadCommand
@@ -289,8 +268,6 @@ namespace Wpfcurd.ViewModel
             {
                 LoadData();
             }
-
-
             private Relaycommand deleteCommand;
             public Relaycommand DeleteCommand
             {
@@ -299,16 +276,25 @@ namespace Wpfcurd.ViewModel
                     return deleteCommand;
                 }
             }
-
-            private void Delete()
+        private bool CanDelete(object parameter)
+        {
+          if (string.IsNullOrEmpty(CurrentStudent.Name) || string.IsNullOrEmpty(currentStudent.Roll))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        private void Delete(object parameter)
             {
                 var IsDelete = objStudentService.Delete(CurrentStudent.StudentId);
                 if (IsDelete)
                 {
                     MessageBox.Show("Student Deleted", "Success", MessageBoxButton.OK, MessageBoxImage.Asterisk);
                     LoadData();
-
-                    clearData();
+                    clearData(ClearCommand);
                 }
                 else
                 {

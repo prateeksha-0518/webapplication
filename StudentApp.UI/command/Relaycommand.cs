@@ -9,26 +9,43 @@ namespace Wpfcurd.command
 {
     public class Relaycommand : ICommand
     {
-        private Action DoWork;
-
-        public Relaycommand(Action work)
+        Action<object> executeAction;
+        Func<object, bool> canExecute;
+        bool canExecuteCache;
+        public Relaycommand(Action<object> executeAction, Func<object, bool> canExecute, bool canExecuteCache)
         {
-            DoWork = work;
+            this.canExecute = canExecute;
+            this.executeAction = executeAction;
+            this.canExecuteCache = canExecuteCache;
         }
-
-        public event EventHandler CanExecuteChanged;
-
         public bool CanExecute(object parameter)
         {
-            return true;
+            if (canExecute == null)
+            {
+                return true;
+            }
+            else
+            {
+                return canExecute(parameter);
+            }
+
         }
-
-
-
+        public event EventHandler CanExecuteChanged
+        {
+            add
+            {
+                CommandManager.RequerySuggested += value;
+            }
+            remove
+            { 
+                CommandManager.RequerySuggested -= value;
+            }
+        }
         public void Execute(object parameter)
         {
 
-            DoWork();
+            executeAction(parameter);
         }
     }
 }
+

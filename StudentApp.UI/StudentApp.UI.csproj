@@ -183,6 +183,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="view\Studentview.xaml.cs">
       <DependentUpon>Studentview.xaml</DependentUpon>
     </Compile>

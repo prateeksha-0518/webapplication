@@ -18,7 +18,7 @@ namespace Wpfcurd.view
     /// <summary>
     /// Interaction logic for Studentview.xaml
     /// </summary>
-    public partial class Studentview : UserControl
+    public partial class Studentview 
     {
         public Studentview()
         {

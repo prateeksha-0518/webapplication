@@ -21,8 +21,8 @@ namespace Wpfcurd.Models
         }
         public List<Student> GetAll()
         {
-            List<Student> objStudentsList = new List<Student>();
-            HttpResponseMessage response = client.GetAsync("api/students").Result;
+            //List<Student> objStudentsList = new List<Student>();
+            HttpResponseMessage response = client.GetAsync("api/GetEmployees").Result;
             if (response.IsSuccessStatusCode)
             {
                 //it reads the respone content and converts to collection type .Readaync is method to convert IEnumerable
@@ -43,19 +43,20 @@ namespace Wpfcurd.Models
                 Name = objNewStudent.Name,
                 Roll = objNewStudent.Roll
             };
-            var response = client.PostAsJsonAsync("api/students", objNewStudent).Result;
+            var response = client.PostAsJsonAsync("api/Post", objNewStudent).Result;
             if (response.IsSuccessStatusCode)
             {
                 IsAdded = true;
             }
             return IsAdded;
         }
+       
 
 
         public bool Update(Student objStudentToUpdate)
         {
             bool IsUpdated = false;
-            var response = client.PutAsJsonAsync("api/students/" + objStudentToUpdate.StudentId, objStudentToUpdate).Result;
+            var response = client.PutAsJsonAsync("api/Put/" + objStudentToUpdate.StudentId, objStudentToUpdate).Result;
             //objStudentToUpdate.StudentId = objStudentToUpdate.StudentId;
             //objStudentToUpdate.Name = objStudentToUpdate.Name;
             //objStudentToUpdate.Roll = objStudentToUpdate.Roll;
@@ -65,16 +66,15 @@ namespace Wpfcurd.Models
             }
             else
             {
-                MessageBox.Show("Student Failed to save", "Failed", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+                MessageBox.Show("Student Failed to update", "Failed", MessageBoxButton.OK, MessageBoxImage.Asterisk);
             }
             return IsUpdated;
 
         }
         public bool Delete(int id)
         {
-
             bool IsDeleted = false;
-            var url = "api/students/" + id;
+            var url = "api/Delete/" + id;
             HttpResponseMessage response = client.DeleteAsync(url).Result;
             if (response.IsSuccessStatusCode)
             {
@@ -88,7 +88,7 @@ namespace Wpfcurd.Models
         public List<Student> Search(int id)
         {
             List<Student> objStudentsList = new List<Student>();
-            var url = "api/students/" + id;
+            var url = "api/Get/" + id;
             HttpResponseMessage response =  client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
             {
@@ -106,27 +106,15 @@ namespace Wpfcurd.Models
             }
             return objStudentsList;
         }
-        //public  async Task<Student> SearchById(int id)
-        //{
-        //    Student objstudent = null;
-        //    var url = "api/students/" + id;
-        //    HttpResponseMessage response =  client.GetAsync(url).Result;
-        //    if(response.IsSuccessStatusCode)
-        //    {
-        //           objstudent= response.Content.ReadAsAsync<Student>().Result;
-        //    }
-        //    return objstudent;
-        //}
 
         public List<Student> SearchbyName(string name)
         {
             List<Student> objStudentsList = new List<Student>();
-            var url = "api/students?name=" + name;
+            var url = "api/Get1?name=" + name;
             HttpResponseMessage response =  client.GetAsync(url).Result;
             if (response.IsSuccessStatusCode)
             {
-                try
-                {
+                
                     var student =  response.Content.ReadAsAsync<List<Student>>().Result;
                     if (student != null)
                     {
@@ -140,11 +128,8 @@ namespace Wpfcurd.Models
                             });
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                
+               
             }
             return objStudentsList;
         }

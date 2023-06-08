@@ -12,20 +12,10 @@ using System.Web.Http.Results;
 namespace Wpfcurd.Models
 {
     //Idataerror info reports error
-    public class Student : INotifyPropertyChanged, IDataErrorInfo
+    public class Student :  IDataErrorInfo
     {
        
-        public event PropertyChangedEventHandler PropertyChanged;
-        //private void OnPropertyChanged(string p)
-        //{
-        //    ProgressChangedEventHandler ph = PropertyChanged;
-        //    if (ph != null)
-        //        ph(this, new ProgressChangedEventArgs(p));
-        //}
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this,new PropertyChangedEventArgs(propertyName));
-        }
+        
         private int _StudentId;
         public int StudentId
         {
@@ -33,7 +23,7 @@ namespace Wpfcurd.Models
             set
             {
                 _StudentId = value;
-                OnPropertyChanged();
+              
             }
         }
 
@@ -47,7 +37,7 @@ namespace Wpfcurd.Models
             {
                 
                 _Name = value;
-                OnPropertyChanged();
+               
             }
         }
 
@@ -58,7 +48,7 @@ namespace Wpfcurd.Models
             set
             {
                 _Roll = value;
-                OnPropertyChanged();
+               
             }
         }
          
