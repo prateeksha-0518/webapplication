@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Objects;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,23 +22,58 @@ namespace Wpfcurd.ViewModel
         {
             objStudentService = new StudentService();
             LoadData();
+            currentPage = 1;
+            PageSize = 10;
             CurrentStudent = new Student();
             editCommand = new Relaycommand(Edit, CanEdit, false);
-
             SelectedStudent = new Student();
             clearCommand = new Relaycommand(clearData, Canclear, false);
             saveCommand = new Relaycommand(Save, CanSave, false);
-
             searchCommand = new Relaycommand(Search, CanSearch, false);
-
-
             deleteCommand = new Relaycommand(Delete, CanDelete, false);
+            previousPageCommand = new Relaycommand(PreviousPage,CanPreviousPage,false);
+            nextPageCommand = new Relaycommand(NextPage,CanNextPage,false);
             // loadCommand = new Relaycommand(Load);
 
 
         }
 
+        private int pageSize = 10; // Number of items per page
+        private int currentPage = 1; // Current page number
+        private int totalItems; // Total number of items
+        private int totalPages; // Total number of pages
 
+        public int PageSize
+        {
+            get { return pageSize; }
+            set { pageSize = value; NotifyPropertyChanged("PageSize"); }
+        }
+
+        public int CurrentPage
+        {
+            get { return currentPage; }
+            set { currentPage = value; NotifyPropertyChanged("CurrentPage"); }
+        }
+        private bool CanNextPage(Object Parameter)
+        {
+            return CurrentPage < TotalPages;
+               
+        }
+        private bool CanPreviousPage(Object Parameter)
+        {
+            return CurrentPage > 1;
+        }
+        public int TotalItems
+        {
+            get { return totalItems; }
+            set { totalItems = value; NotifyPropertyChanged("TotalItems"); }
+        }
+
+        public int TotalPages
+        {
+            get { return totalPages; }
+            set { totalPages = value; NotifyPropertyChanged("TotalPages"); }
+        }
 
         private ObservableCollection<Student> studentsList;
         public ObservableCollection<Student> StudentsList
@@ -50,10 +86,45 @@ namespace Wpfcurd.ViewModel
         }
         private void LoadData()
         {
+           
+            int PageSize = 10;
             StudentsList = new ObservableCollection<Student>(objStudentService.GetAll());
-
+            TotalItems = StudentsList.Count;
+            TotalPages = (int)Math.Ceiling((double)TotalItems / PageSize);
+            var paginatedStudents = StudentsList.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
+            StudentsList = new ObservableCollection<Student>(paginatedStudents);
+        }
+        private Relaycommand nextPageCommand;
+        public Relaycommand NextPageCommand
+        {
+            get { return nextPageCommand; }
+            set { nextPageCommand = value; }
         }
 
+        public void NextPage(Object Parameter)
+        {
+            if (CurrentPage < TotalPages)
+            {
+                CurrentPage++;
+                LoadData();
+            }
+        }
+
+        private Relaycommand previousPageCommand;
+        public Relaycommand PreviousPageCommand
+        {
+            get { return previousPageCommand; }
+            set { previousPageCommand = value; }
+        }
+
+        public void PreviousPage(Object Parameter)
+        {
+            if (CurrentPage > 1)
+            {
+                CurrentPage--;
+                LoadData();
+            }
+        }
         private Relaycommand clearCommand;
         public Relaycommand ClearCommand
         {
