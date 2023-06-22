@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -17,49 +18,71 @@ namespace Wpfcurd.ViewModel
 
     public class StudentViewModel : ViewModelBase
     {
+        private ObservableCollection<Student> students;
+        private int currentPage;
+        private int totalPages;
+
         StudentService objStudentService;
+        public ObservableCollection<Student> Students
+        {
+            get { return students; }
+            set
+            {
+                students = value;
+                NotifyPropertyChanged(nameof(Students));
+            }
+        }
+        
+    
         public StudentViewModel()
         {
-            objStudentService = new StudentService();
-            LoadData();
+           objStudentService = new StudentService();
             currentPage = 1;
-            PageSize = 10;
+            previousPageCommand = new Relaycommand(PreviousPage, CanPreviousPage,false);
+            nextPageCommand = new Relaycommand(NextPage, CanNextPage, false);
             CurrentStudent = new Student();
             editCommand = new Relaycommand(Edit, CanEdit, false);
             SelectedStudent = new Student();
             clearCommand = new Relaycommand(clearData, Canclear, false);
             saveCommand = new Relaycommand(Save, CanSave, false);
-            searchCommand = new Relaycommand(Search, CanSearch, false);
+            searchCommand = new Relaycommand(LoadData, CanSearch,false);
             deleteCommand = new Relaycommand(Delete, CanDelete, false);
-            previousPageCommand = new Relaycommand(PreviousPage,CanPreviousPage,false);
-            nextPageCommand = new Relaycommand(NextPage,CanNextPage,false);
-            // loadCommand = new Relaycommand(Load);
-
-
+            LoadData();
         }
 
-        private int pageSize = 10; // Number of items per page
-        private int currentPage = 1; // Current page number
+    
+      
         private int totalItems; // Total number of items
-        private int totalPages; // Total number of pages
 
-        public int PageSize
-        {
-            get { return pageSize; }
-            set { pageSize = value; NotifyPropertyChanged("PageSize"); }
-        }
 
         public int CurrentPage
         {
             get { return currentPage; }
-            set { currentPage = value; NotifyPropertyChanged("CurrentPage"); }
+            set
+            {
+                currentPage = value;
+
+                NotifyPropertyChanged(nameof(CurrentPage));
+                LoadData();
+            }
         }
-        private bool CanNextPage(Object Parameter)
+
+        public int TotalPages
+        {
+            get { return totalPages; }
+            set
+            {
+                totalPages = value;
+                NotifyPropertyChanged(nameof(TotalPages));
+            }
+        }
+
+        private bool CanNextPage()
         {
             return CurrentPage < TotalPages;
                
         }
-        private bool CanPreviousPage(Object Parameter)
+        private bool CanPreviousPage()
         {
             return CurrentPage > 1;
         }
@@ -69,11 +92,7 @@ namespace Wpfcurd.ViewModel
             set { totalItems = value; NotifyPropertyChanged("TotalItems"); }
         }
 
-        public int TotalPages
-        {
-            get { return totalPages; }
-            set { totalPages = value; NotifyPropertyChanged("TotalPages"); }
-        }
+       
 
         private ObservableCollection<Student> studentsList;
         public ObservableCollection<Student> StudentsList
@@ -84,16 +103,19 @@ namespace Wpfcurd.ViewModel
             }
             set { studentsList = value; NotifyPropertyChanged("StudentsList"); }
         }
-        private void LoadData()
+       
+        public void LoadData()
         {
-           
-            int PageSize = 10;
-            StudentsList = new ObservableCollection<Student>(objStudentService.GetAll());
-            TotalItems = StudentsList.Count;
-            TotalPages = (int)Math.Ceiling((double)TotalItems / PageSize);
-            var paginatedStudents = StudentsList.Skip((CurrentPage - 1) * PageSize).Take(PageSize).ToList();
-            StudentsList = new ObservableCollection<Student>(paginatedStudents);
+            int pageSize = 10;
+            var students = objStudentService.GetAll(CurrentPage,pageSize,SearchText);
+            StudentsList = new ObservableCollection<Student>(students);
+            int Totalstudents = objStudentService.GetTotalStudentCount();
+            {
+                TotalPages = (int)Math.Ceiling((double)Totalstudents / pageSize);
+            }
+
         }
+
         private Relaycommand nextPageCommand;
         public Relaycommand NextPageCommand
         {
@@ -101,12 +123,12 @@ namespace Wpfcurd.ViewModel
             set { nextPageCommand = value; }
         }
 
-        public void NextPage(Object Parameter)
+        public void NextPage()
         {
             if (CurrentPage < TotalPages)
             {
                 CurrentPage++;
-                LoadData();
+               
             }
         }
 
@@ -117,12 +139,12 @@ namespace Wpfcurd.ViewModel
             set { previousPageCommand = value; }
         }
 
-        public void PreviousPage(Object Parameter)
+        public void PreviousPage()
         {
             if (CurrentPage > 1)
             {
                 CurrentPage--;
-                LoadData();
+              
             }
         }
         private Relaycommand clearCommand;
@@ -138,21 +160,42 @@ namespace Wpfcurd.ViewModel
             }
         }
 
-        private void clearData(object parameter)
+        private void clearData()
         {
            
             CurrentStudent.Name = "";
             CurrentStudent.Roll = "";
         }
-
-        private bool Canclear(object parameter)
+        private string _SortField;
+        public string SortField
+        {
+            get { return _SortField; }
+            set
+            {
+                _SortField = value;
+                NotifyPropertyChanged(nameof(SortField));
+              
+            }
+        }
+        private string _SortOrder;
+        public string SortOrder
+        {
+            get { return _SortOrder; }
+            set
+            {
+                _SortOrder = value;
+                NotifyPropertyChanged(nameof(SortOrder));
+               
+            }
+        }
+        private bool Canclear()
         {
             return true;
 
         }
         private void clear()
         {
-            clearData(null);
+            clearData();
         }
         //Property that holds value of textboxes
         private Student currentStudent;
@@ -189,12 +232,12 @@ namespace Wpfcurd.ViewModel
                 NotifyPropertyChanged(nameof(Edit));
             }
         }
-        private bool CanEdit(object parameter)
+        private bool CanEdit()
         { 
                 return true;
             
         }
-        public void Edit(object parameter)
+        public void Edit()
         {
 
             if (SelectedStudent != null)
@@ -216,7 +259,7 @@ namespace Wpfcurd.ViewModel
             }
         }
         
-        private bool CanSave(object parameter)
+        private bool CanSave()
         {
             if (string.IsNullOrEmpty(CurrentStudent.Name) || string.IsNullOrEmpty(currentStudent.Roll))
             {
@@ -228,7 +271,7 @@ namespace Wpfcurd.ViewModel
             }
         }
 
-        private void Save(object parameter)
+        private void Save()
         {
              if (currentStudent.StudentId == 0)
                 {
@@ -237,7 +280,7 @@ namespace Wpfcurd.ViewModel
                     {
                         MessageBox.Show("Student Saved", "Success", MessageBoxButton.OK, MessageBoxImage.Asterisk);
                         LoadData();
-                    clearData("");
+                    clearData();
                 }
                     else
                     {
@@ -253,7 +296,7 @@ namespace Wpfcurd.ViewModel
                     {
                         MessageBox.Show("Student Updated", "Success", MessageBoxButton.OK, MessageBoxImage.Asterisk);
                         LoadData();
-                    ClearCommand.Execute("");
+                   clearData();
                     }
                     else
                     {
@@ -275,7 +318,7 @@ namespace Wpfcurd.ViewModel
             }
         }
        
-        private String searchText;
+        private string searchText;
         public string SearchText
         {
             get
@@ -285,13 +328,13 @@ namespace Wpfcurd.ViewModel
                 searchText = value;NotifyPropertyChanged("SearchText");
             }
         }
-        private bool CanSearch(object parameter)
+        private bool CanSearch()
         {        
                 return true;     
         }
 
 
-        public void Search(object parameter)
+        public void Search()
         {
             if (string.IsNullOrEmpty(searchText))
             {
@@ -347,7 +390,7 @@ namespace Wpfcurd.ViewModel
                     return deleteCommand;
                 }
             }
-        private bool CanDelete(object parameter)
+        private bool CanDelete()
         {
           if (string.IsNullOrEmpty(CurrentStudent.Name) || string.IsNullOrEmpty(currentStudent.Roll))
             {
@@ -358,14 +401,14 @@ namespace Wpfcurd.ViewModel
                 return true;
             }
         }
-        private void Delete(object parameter)
+        private void Delete()
             {
                 var IsDelete = objStudentService.Delete(CurrentStudent.StudentId);
                 if (IsDelete)
                 {
                     MessageBox.Show("Student Deleted", "Success", MessageBoxButton.OK, MessageBoxImage.Asterisk);
                     LoadData();
-                    clearData(ClearCommand);
+                    clearData();
                 }
                 else
                 {

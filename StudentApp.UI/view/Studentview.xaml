@@ -11,16 +11,15 @@
             <Style TargetType="TextBox">
                 <Style.Triggers>
                     <Trigger Property="Validation.HasError" Value="True">
-                        <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
                     </Trigger>
                 </Style.Triggers>
             </Style>
-        <Style TargetType="Button">
+            <Style TargetType="Button">
             <Setter Property="Background" Value="Gray"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-
                         <Border Background="{TemplateBinding Background}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -38,9 +37,9 @@
     
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -62,10 +61,19 @@
                     <KeyBinding Key="Enter" Command="{Binding SearchCommand}"/>
                 </TextBox.InputBindings>
                     </TextBox>
+            <ComboBox SelectedItem="{Binding Path=SortField}">
+                <ComboBoxItem Content="StudentId" />
+                <ComboBoxItem Content="Name" />
+                <ComboBoxItem Content="Roll" />
+            </ComboBox>
+            <ComboBox  SelectedItem="{Binding Path=SortOrder}">
+                <ComboBoxItem Content="Ascending" />
+                <ComboBoxItem Content="Descending" />
+            </ComboBox>
         </StackPanel>
             <DataGrid x:Name="dgStudent"  Grid.Row="1" Grid.Column="1"
                    xmlns:my="http://schemas.microsoft.com/wpf/2008/toolkit"
-                   CanUserAddRows="False"
+                   CanUserAddRows="False" CanUserSortColumns="False"
                   ItemsSource="{Binding Path=StudentsList, Mode=TwoWay}"
                    SelectedItem="{Binding Path=SelectedStudent, Mode=TwoWay}" AutoGenerateColumns="False" >
 
@@ -84,14 +92,12 @@
             </DataGrid.Columns>
         </DataGrid>
         <StackPanel Grid.Row="2" Grid.Column="1"  Orientation="Horizontal">
-
             <Button Grid.Row="2" Grid.Column="1"  Content="Previous" Command="{Binding PreviousPageCommand}" Margin="0,10,0,0" HorizontalAlignment="Center" Width="55" Height="20" />
-            <TextBlock  Grid.Row="2" Grid.Column="1" Text="{Binding CurrentPage}" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+            <TextBlock  Grid.Row="2" Grid.Column="1" Text="{Binding CurrentPage,Mode=OneWay}" Margin="0,10,0,0" HorizontalAlignment="Center"/>
             <TextBlock Grid.Row="2" Grid.Column="1" Text="/" Margin="0,10,0,0"/>
-            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding TotalPages}" Margin="0,10,0,0" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding TotalPages,Mode=OneWay}" Margin="0,10,0,0" HorizontalAlignment="Center"/>
             <Button Grid.Row="2"  Grid.Column="1" Content="Next" Command="{Binding NextPageCommand}" Margin="0,10,0,0" HorizontalAlignment="Center" Width="55" Height="20" />
         </StackPanel>
-
 
         <Label  Target="{Binding ElementName=txtName}" Grid.Row="3" Grid.Column="0" x:Name="lblName" Margin="0 30 0 0"  HorizontalAlignment="Left"  VerticalAlignment="Top" Width="62"  Height="26">
                 <StackPanel Orientation="Horizontal">

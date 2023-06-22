@@ -9,10 +9,10 @@ namespace Wpfcurd.command
 {
     public class Relaycommand : ICommand
     {
-        Action<object> executeAction;
-        Func<object, bool> canExecute;
+        Action  executeAction;
+        Func< bool> canExecute;
         bool canExecuteCache;
-        public Relaycommand(Action<object> executeAction, Func<object, bool> canExecute, bool canExecuteCache)
+        public Relaycommand(Action executeAction, Func< bool> canExecute, bool canExecuteCache)
         {
             this.canExecute = canExecute;
             this.executeAction = executeAction;
@@ -26,7 +26,7 @@ namespace Wpfcurd.command
             }
             else
             {
-                return canExecute(parameter);
+                return canExecute();
             }
 
         }
@@ -44,7 +44,7 @@ namespace Wpfcurd.command
         public void Execute(object parameter)
         {
 
-            executeAction(parameter);
+            executeAction();
         }
     }
 }

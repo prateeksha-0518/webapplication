@@ -20,32 +20,79 @@ namespace code.Controllers
         /// Get All Students
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="Exception"></exception>
-        [HttpGet]
-        [Route("api/GetEmployees")]
-        public IHttpActionResult GetStudents()
-        {
-            using (DatabaseContext  dbContext = new DatabaseContext())
-            {
-                var Employees = dbContext.Students.ToList();
-                if (Employees.Count == 0)
-                {
-                    throw new Exception();
+        
+        //[HttpGet]
+        //[Route("api/GetStudents")]
+        //public IHttpActionResult GetStudents()
+        //{
+        //    using (DatabaseContext dbContext = new DatabaseContext())
+        //    {
+        //        var Employees = dbContext.Students.ToList();
+        //        if (Employees.Count == 0)
+        //        {
+        //            throw new Exception();
 
-                }
-                else
+        //        }
+        //        else
+        //        {
+        //            return Ok(Employees);
+        //        }
+        //    }
+        //}
+        [HttpGet]
+        [Route("api/GetStudents")]
+        public IHttpActionResult GetStudents(int page = 1, int pageSize = 10, string Search = "", string SortField = "Id", string SortOrder = "asc")
+        {
+            using (DatabaseContext dbContext = new DatabaseContext())
+            {
+                var students = dbContext.Students
+                .OrderBy(s => s.StudentId)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+
+                students = students
+                .Where(s => string.IsNullOrEmpty(Search) || s.Name.Contains(Search) || s.StudentId.ToString().Contains(Search))
+                .ToList();
+
+
+                switch (SortField.ToLower())
                 {
-                    return Ok(Employees);
+                    case "id":
+                        students = (SortOrder.ToLower() == "desc")
+                        ? students.OrderByDescending(s => s.StudentId).ToList()
+                        : students.OrderBy(s => s.StudentId).ToList();
+                        break;
+                    case "name":
+                        students = (SortOrder.ToLower() == "desc")
+                        ? students.OrderByDescending(s => s.Name).ToList()
+                        : students.OrderBy(s => s.Name).ToList();
+                        break;
+                    case "roll":
+                        students = (SortOrder.ToLower() == "desc")
+                        ? students.OrderByDescending(s => s.Roll).ToList()
+                        : students.OrderBy(s => s.Roll).ToList();
+                        break;
+                    default:
+                        // Default sorting by Id in ascending order
+                        students = students.OrderBy(s => s.StudentId).ToList();
+                        break;
                 }
+
+                return Ok(students);
             }
         }
-       
-        /// <summary>
-        /// Get students by id
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        /// <exception cref="NullReferenceException"></exception>
+        [HttpGet]
+        [Route("api/GetTotalStudentCount")]
+        public int GetTotalStudentCount()
+        {
+            using (DatabaseContext dbContext = new DatabaseContext())
+            {
+                return dbContext.Students.Count();
+            }
+        }
+
         [HttpGet]
         [Route("api/Get/{id}")]
         public IHttpActionResult Get(int id)

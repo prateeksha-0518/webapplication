@@ -1,4 +1,5 @@
-﻿using System;
+﻿using code.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -6,6 +7,7 @@ using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace Wpfcurd.Models
 {
@@ -19,20 +21,33 @@ namespace Wpfcurd.Models
             client.DefaultRequestHeaders.Accept.Add(
             new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
         }
-        public List<Student> GetAll()
+       
+        public List<Student> GetAll(int page, int pageSize,string Search)
         {
-            //List<Student> objStudentsList = new List<Student>();
-            HttpResponseMessage response = client.GetAsync("api/GetEmployees").Result;
+            HttpResponseMessage response = client.GetAsync($"api/GetStudents?page={page}&pageSize={pageSize}&Search={Search}").Result;
             if (response.IsSuccessStatusCode)
             {
-                //it reads the respone content and converts to collection type .Readaync is method to convert IEnumerable
-                var students = response.Content.ReadAsAsync<IEnumerable<Student>>().Result;
-                //returns list instead of passing ienumerable.list provides flexibility in modifying list
+                var students = response.Content.ReadAsAsync<List<Student>>().Result;
                 return students.ToList();
             }
-            //return objStudentsList;
             return null;
         }
+        public int GetTotalStudentCount()
+        {
+          HttpResponseMessage response = client.GetAsync("api/GetTotalStudentCount").Result;
+
+         if (response.IsSuccessStatusCode)
+            {
+                int totalStudents = response.Content.ReadAsAsync<int>().Result;
+                return totalStudents;
+            }
+            else
+            {
+
+                return 0;
+            }
+        }
+
 
         public bool Add(Student objNewStudent)
         {
@@ -64,10 +79,7 @@ namespace Wpfcurd.Models
             {
                 IsUpdated = true;
             }
-            else
-            {
-                MessageBox.Show("Student Failed to update", "Failed", MessageBoxButton.OK, MessageBoxImage.Asterisk);
-            }
+           
             return IsUpdated;
 
         }

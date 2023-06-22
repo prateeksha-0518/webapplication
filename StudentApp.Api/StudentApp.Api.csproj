@@ -147,13 +147,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\202305300727578_InitialCreate.cs" />
-    <Compile Include="Migrations\202305300727578_InitialCreate.designer.cs">
-      <DependentUpon>202305300727578_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202305300846263_IntialCreate.cs" />
-    <Compile Include="Migrations\202305300846263_IntialCreate.designer.cs">
-      <DependentUpon>202305300846263_IntialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\202306131003536_initialScript.cs" />
+    <Compile Include="Migrations\202306131003536_initialScript.designer.cs">
+      <DependentUpon>202306131003536_initialScript.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Student.cs" />
@@ -162,12 +158,16 @@
   <ItemGroup>
     <Content Include="code.csproj.user" />
     <Content Include="Global.asax" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -177,11 +177,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202305300727578_InitialCreate.resx">
-      <DependentUpon>202305300727578_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202305300846263_IntialCreate.resx">
-      <DependentUpon>202305300846263_IntialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202306131003536_initialScript.resx">
+      <DependentUpon>202306131003536_initialScript.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
